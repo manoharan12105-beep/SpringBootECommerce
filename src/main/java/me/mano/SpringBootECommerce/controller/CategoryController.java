@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import me.mano.SpringBootECommerce.model.Category;
+import me.mano.SpringBootECommerce.entity.Category;
 import me.mano.SpringBootECommerce.service.CategoryService;
 
 @RestController
 public class CategoryController {
 
   private CategoryService categoryService; // Loose coupling
-
+ 
   public CategoryController(CategoryService categoryService) {
     this.categoryService = categoryService;
   }
