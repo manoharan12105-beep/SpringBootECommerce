@@ -7,5 +7,7 @@ import me.mano.SpringBootECommerce.entity.Category;
 
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Long> {
+
+  Category findByCategoryName(String categoryName);
   
 }
