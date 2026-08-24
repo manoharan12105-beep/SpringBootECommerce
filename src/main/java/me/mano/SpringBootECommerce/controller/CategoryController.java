@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import me.mano.SpringBootECommerce.DTO.CategoryDTO;
@@ -27,9 +28,11 @@ public class CategoryController {
   }
 
   @GetMapping("api/public/categories")
-  public ResponseEntity<CategoryResponse> getAllCategories() {
-    CategoryResponse categories = categoryService.getAllCategories();
-    return new ResponseEntity<>(categories, HttpStatus.OK);
+  public ResponseEntity<CategoryResponse> getAllCategories(
+    @RequestParam(name = "pageNumber") Integer pageNumber,
+    @RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize ) {
+      CategoryResponse categories = categoryService.getAllCategories(pageNumber, pageSize);
+      return new ResponseEntity<>(categories, HttpStatus.OK);
   }
 
   @PostMapping("api/public/categories")
@@ -46,6 +49,7 @@ public class CategoryController {
 
     return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
   }
+
 
   @PutMapping("/api/admin/categories/update/{categoryId}")
   public ResponseEntity<CategoryDTO> updateCategory(@RequestBody CategoryDTO categoryDTO, @PathVariable Long categoryId) {
