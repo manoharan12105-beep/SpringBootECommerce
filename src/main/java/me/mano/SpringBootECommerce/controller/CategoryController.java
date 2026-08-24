@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import me.mano.SpringBootECommerce.DTO.CategoryDTO;
 import me.mano.SpringBootECommerce.DTO.CategoryResponse;
+import me.mano.SpringBootECommerce.config.AppConstants;
 import me.mano.SpringBootECommerce.entity.Category;
 import me.mano.SpringBootECommerce.service.CategoryService;
 
@@ -29,9 +30,11 @@ public class CategoryController {
 
   @GetMapping("api/public/categories")
   public ResponseEntity<CategoryResponse> getAllCategories(
-    @RequestParam(name = "pageNumber") Integer pageNumber,
-    @RequestParam(name = "pageSize", defaultValue = "5") Integer pageSize ) {
-      CategoryResponse categories = categoryService.getAllCategories(pageNumber, pageSize);
+    @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false) Integer pageNumber,
+    @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE, required = false) Integer pageSize,
+    @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORY_BY, required = false) String sortBy,
+    @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR, required = false) String sortOrder) {
+      CategoryResponse categories = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
       return new ResponseEntity<>(categories, HttpStatus.OK);
   }
 
