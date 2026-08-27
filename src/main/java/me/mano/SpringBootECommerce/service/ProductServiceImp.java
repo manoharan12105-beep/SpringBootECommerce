@@ -10,9 +10,11 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.Valid;
 import me.mano.SpringBootECommerce.DTO.ProductDto;
 import me.mano.SpringBootECommerce.DTO.ProductResponse;
 import me.mano.SpringBootECommerce.entity.Category;
@@ -32,6 +34,12 @@ public class ProductServiceImp implements ProductService {
 
   @Autowired
   private ModelMapper modelMapper;
+
+  @Autowired
+  private FileService fileService;
+
+  @Value("${project.image}")
+  private String path;
 
   @Override
   public ProductDto addProduct(Long categoryId, Product product) {
@@ -113,9 +121,8 @@ public class ProductServiceImp implements ProductService {
     Product productFromDb = productRepo.findById(productId)
       .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-    // Use relative path inside project
-    String path = "images";
-    String fileName = uploadImage(path, image);
+    // String path = "images";
+    String fileName = fileService.uploadImage(path, image);
 
     productFromDb.setImage(fileName);
     Product updatedProduct = productRepo.save(productFromDb);
@@ -123,25 +130,5 @@ public class ProductServiceImp implements ProductService {
     return modelMapper.map(updatedProduct, ProductDto.class);
   }
 
-  private String uploadImage(String path, MultipartFile file) throws IOException {
-    // File name of current / original file
-    String originalFileName = file.getOriginalFilename();
-
-    // Generate a unique file name
-    String randomId = UUID.randomUUID().toString();
-    String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
-
-    // Check for the folder exist ?
-    File folder = new File(path);
-    if (!folder.exists()) {
-      folder.mkdirs(); // create nested directories if needed
-    }
-
-    // Uploading
-    String filePath = path + File.separator + fileName;
-    Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-
-    // Returning
-    return fileName;
-  }
+  
 }
