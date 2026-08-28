@@ -14,16 +14,18 @@ public interface ProductService {
 
   ProductDto addProduct(Long categoryId, Product product);
 
-  ProductResponse getProduct();
-
-  ProductResponse getAllProdByCategoryId(Long categoryId);
-
-  ProductResponse getProdByKeyword(String keyword);
-
   ProductDto updateProduct(Product product, Long categoryId);
 
   ProductDto deleteProduct(Long productId);
 
   ProductDto updateProductImage(Long productId, MultipartFile image) throws IOException;
+
+  ProductResponse getProduct(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+
+  ProductResponse getAllProdByCategoryId(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder,
+      Long categoryId);
+
+  ProductResponse getProdByKeyword(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder,
+      String keyword);
   
 }
