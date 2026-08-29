@@ -1,13 +1,7 @@
 package me.mano.SpringBootECommerce.service;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.UUID;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.validation.Valid;
 import me.mano.SpringBootECommerce.DTO.ProductDto;
 import me.mano.SpringBootECommerce.DTO.ProductResponse;
 import me.mano.SpringBootECommerce.entity.Category;
