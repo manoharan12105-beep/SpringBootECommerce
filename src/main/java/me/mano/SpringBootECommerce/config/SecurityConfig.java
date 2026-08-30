@@ -3,6 +3,9 @@ package me.mano.SpringBootECommerce.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,6 +23,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import javax.sql.DataSource;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import me.mano.SpringBootECommerce.security.AuthEntryPointJwt;
+import me.mano.SpringBootECommerce.security.AuthTokenFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -29,14 +36,27 @@ public class SecurityConfig {
   @Autowired
   private DataSource dataSource;
 
+  @Autowired
+  private AuthEntryPointJwt unauthorizedHandler;
+
+  @Bean
+  public AuthTokenFilter authenticationJwtTokenFilter() {
+    return new AuthTokenFilter();
+  }
+
   @Bean
   SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests((requests) ->
                                 requests.requestMatchers("/test/noAuth/**").permitAll()
+                                        .requestMatchers("/test/signin").permitAll()
                                         .anyRequest().authenticated());
     http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     // http.formLogin(withDefaults());
-    http.httpBasic(withDefaults());
+    // http.httpBasic(withDefaults());
+    http.exceptionHandling(
+      exception -> exception.authenticationEntryPoint(unauthorizedHandler)
+    );
+    http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     http.csrf(csrf -> csrf.disable());
     return http.build();
   }
@@ -72,5 +92,10 @@ public class SecurityConfig {
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder(12);
   }
-  
+
+
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+    return authConfig.getAuthenticationManager();
+  }  
 }
